@@ -1,0 +1,69 @@
+Adding Positional Touch-Sensing
+===
+
+## Day 3
+
+Jan6, 4:00pm
+
+system requires high linearity and reproducibility
+
+### Resistive Solution
+
+[spectraSymbol](http://www.spectrasymbol.com) produces softPots of assorted lengths and specifications
+
+finger is approximately 65mm long
+
+DigiKey stocks [50mm softPots](http://www.digikey.com/scripts/dksearch/dksus.dll?Detail&name=905-1062-ND) offering ±3% linearity and 10kΩ resistance with a 1-million-cycle guarantee.
+
+### Optical Solution
+
+measure the change in light intensity resulting from deformation of a reflective surface
+
+* [OP250 LED](www.optekinc.com/datasheets/OP200.pdf)
+* [OP520 Phototransistor](www.optekinc.com/datasheets/op520-521.pdf)
+
+## Day 4
+
+Jan7, 10:00am
+
+additional thoughts on an optical solution:
+
+* As LEDs can also act as photodiodes, cool things can be done implementing active proximity detection on a single LED.
+
+>	see [patent no. 4564756](http://www.freepatentsonline.com/4564756.pdf) for details.
+
+* In this same vein, a single LED can also act as a [combination TX/RX unit](http://www.merl.com/reports/docs/TR2003-35.pdf)
+* More feasible and less complicated is using surrounding LEDs for illumination and one LED at a time for detection, shifting round-robin.
+
+>	see [this collection of links](http://projects.dimension-x.net/technology-and-projects/ledsensors) for a large number of resources around the topic of using LEDs as sensors.
+
+* LED spacing of .5cm will easily allow for the 7.5-15mm accuracy and precision requirements.
+* Adding a textured surface(air-gap) to the LED-backed surface would increase the difference between pressure and no pressure, as airgaps are significantly less reflective than mylar.
+* Coating the whole thing in plastidip would produce a gripper with a soft coating, professional appearance, and excellent opacity.
+
+## Day 5
+
+Jan9, 2:00pm-11:50pm, 2:50hr break for church & lunch
+
+### Epic Win
+
+glued 6x [VSML3710](http://www.vishay.com/docs/81300/81300.pdf) 940nM IR LEDs face-down at 1cm increments to a 6cm soft polymer pad.
+
+soldered them in common-cathode configuration.
+
+applied +1.5v to LEDs 0-3 and 5, monitored voltage on LED 4.
+
+open-circuit voltage monitored with TEK DMM 254, increased as finger became proximate, increased further with applied pressure. voltage increase of up to 40mv observed.
+
+assembly dipped in black plastidip, allowed to dry, re-applied.
+
+circuit assembled as above, in this circumstance, no effect on open-circuit voltage as finger became proximate. 
+
+voltage decreased with applied pressure. voltage decrease of up to approximately 45mv observed.
+
+## Day 7
+
+Jan11, 10:00am - 2:30pm
+
+
+http://www.vishay.com/docs/81300/81300.pdf

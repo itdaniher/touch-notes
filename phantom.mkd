@@ -1,0 +1,101 @@
+Rebuilding a Phantom Desktop
+===
+
+##Day 1
+---
+Jan4, 8:20a-5:45p, 1hr for lunch.
+
+encoders:
+
+* encoders 0, 1, 2 all use [HEDM-5500](http://www.avagotech.com/docs/AV02-1046EN)
+* encoders 3, 4, 5 all use [OME-500-2CA](http://www.nemicon.com/pdf/ome-a.pdf)
+* both encoders: 500P/R
+
+### Phantom Amp Box
+
+<embed type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" width="288" height="192" flashvars="host=picasaweb.google.com&hl=en_US&feat=flashalbum&RGB=0x000000&feed=http%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2Fexplodingmind%2Falbumid%2F5559215352732828465%3Falt%3Drss%26kind%3Dphoto%26authkey%3DGv1sRgCOuNoqiy-PPe_QE%26hl%3Den_US" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+
+(see also: http://bit.ly/phantomPics)
+
+pinout:
+
+* 5v: pin 4
+* GND: pin 12
+
+
+order:
+
+* db15: 215ME-ND
+* mbed: 568-4916-ND
+
+
+mbed stuff:
+
+* baud rates: 115.2kbps, 230.4kbps, 460.8kbps, 921.6kbps
+* need a sample rate of at least 1ksps → 16bit counters → 2 bytes → 6DOF → 12 bytes / sample → 12kbps minimum
+* interrupt handling can be done at an absolute max of 500KHz
+* windows USB-serial driver: http://mbed.org/media/downloads/drivers/mbedWinSerial_16466.exe
+
+lpcxpresso stuff:
+
+* svn checkout http://lpc1343codebase.googlecode.com/svn/trunk/ lpc1343codebase
+* ftp://lpcxpresso.code-red-tech.com/LPCXpresso-Linux-x86-3.8.0.114
+
+
+
+##Day 2
+---
+Jan5, 10:00a-7:00p, 1hr for lunch
+
+mbed, and indeed, all USB-enabled microcontrollers likely have too high-latency.
+see [this site on Arduino serial latency](http://www.neophob.com/2010/11/arduino-serial-latency/) for details.
+
+available opportunties for lower-latency communication include the [Adlink PCI-8138](http://www.adlinktech.com/PD/marketing/Datasheet/PCI-8136/PCI-8136_Datasheet_9.pdf) and the [NI PCI-6225](http://sine.ni.com/nips/cds/view/p/lang/en/nid/201605)
+
+the NI PCI-6225 turns out to not have enough analog outputs; three are needed to drive the three actuators.
+
+the Adlink has sufficient inputs and outputs, as well as supporting out-of-the-box six quadrature encoders, see the manual [here](http://www.circuitspecialists.com/products/pdf/pci8136.pdf)
+
+we don't need the DB9 or DB25 connectors as they only pass serial comms and analog inputs; we exclusively need the digital inputs and analog outputs available on the 100-pin conector
+
+bad news: the Adlink doesn't appear to have a real-time simulink block in our toolkit
+
+more bad news. latency, latency everywhere. exploring alternatives due to nastyness of C API for PCI card.
+
+asked for [help](http://www.reddit.com/r/engineering/comments/ewput/tearing_out_my_hair_need_lowspeed_lowlatency/).
+
+found [this](http://www.knjn.com/FPGA-PCI.html) well-documented FPGA/PCI dev board. It'd solve the latency issue for sure, but is expensive and requires knowledge of a HDL.
+
+problem restatement: 12000 bytes per second. less than 1ms latency.
+
+labjack can reach this - 1ms mean&median, .4ms-6ms range - http://forums.labjack.com/index.php?showtopic=4994
+
+see also: http://labjack.com/u3/specs
+
+isochronous transfers via USB would be of use.
+
+* [found a good description of isochronous transfers](http://www.beyondlogic.org/usbnutshell/usb4.shtml#Isochronous)
+* USB audio devices use isochronous transfers
+
+###PinMappings
+
+pins 1, 9 → axis 0
+
+pins 2, 10 → axis 1
+
+pins 3, 11 → axis 2
+
+pins 4, 12 → pwr
+
+pin  5 → button
+
+pins 6, 13 → axis 3
+
+pins 7, 14 → axis 4
+
+pins 8, 15 → axis 5
+
+###Ebay!
+
+Found a replacement PCI card on ebay. Looks like that problem is solved...
+
